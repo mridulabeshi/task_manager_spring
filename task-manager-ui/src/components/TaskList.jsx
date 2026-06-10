@@ -1,35 +1,59 @@
-function TaskList({ tasks, onDelete, onEdit }) {
+function TaskList({ tasks, onDelete, onEdit, onToggle, editingId }) {
+  if (tasks.length === 0) {
+    return <div className="task-list-empty">No tasks yet — add one above.</div>;
+  }
+
   return (
-    <div>
+    <div className="task-list">
       {tasks.map((task) => (
         <div
           key={task.id}
-          style={{
-            border: "1px solid gray",
-            margin: "10px 0",
-            padding: "10px",
-          }}
+          className={[
+            "task-item",
+            task.completed ? "done" : "",
+            editingId === task.id ? "editing" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
         >
-          <h3>{task.title}</h3>
-
-          <p>{task.description}</p>
-
-          <p>
-            Status:
-            {task.completed
-              ? " Completed"
-              : " Pending"}
-          </p>
-
-          <button onClick={() => onEdit(task)}>
-            Edit
-          </button>
-
           <button
-            onClick={() => onDelete(task.id)}
+            className={`task-checkbox ${task.completed ? "checked" : ""}`}
+            onClick={() => onToggle(task)}
+            aria-label={`Mark "${task.title}" as ${task.completed ? "incomplete" : "complete"}`}
+            title={task.completed ? "Mark incomplete" : "Mark complete"}
           >
-            Delete
+            {task.completed ? "✓" : ""}
           </button>
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="task-title">{task.title}</div>
+            {task.description && (
+              <div className="task-description">{task.description}</div>
+            )}
+          </div>
+
+          <span className={`priority-badge ${task.completed ? "low" : "medium"}`}>
+            {task.completed ? "Done" : "Pending"}
+          </span>
+
+          <div className="task-actions">
+            <button
+              className="icon-btn"
+              onClick={() => onEdit(task)}
+              aria-label="Edit task"
+              title="Edit"
+            >
+              ✎
+            </button>
+            <button
+              className="icon-btn delete"
+              onClick={() => onDelete(task.id)}
+              aria-label="Delete task"
+              title="Delete"
+            >
+              ✕
+            </button>
+          </div>
         </div>
       ))}
     </div>

@@ -6,19 +6,14 @@ function AddTask({ onAdd }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    onAdd({
-      title,
-      description,
-      completed: false,
-    });
-
+    if (!title.trim()) return;
+    onAdd({ title: title.trim(), description: description.trim(), completed: false });
     setTitle("");
     setDescription("");
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="add-task" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Task title"
@@ -26,17 +21,13 @@ function AddTask({ onAdd }) {
         onChange={(e) => setTitle(e.target.value)}
         required
       />
-
       <input
         type="text"
-        placeholder="Description"
+        placeholder="Description (optional)"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-
-      <button type="submit">
-        Add Task
-      </button>
+      <button type="submit" className="primary">+ Add</button>
     </form>
   );
 }
